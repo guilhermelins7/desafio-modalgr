@@ -6,7 +6,7 @@
             <mat-label>Nome</mat-label>
             <input matInput type="text" (keyup)="filtroNome($event)" formControlName="nome" placeholder="Seu nome completo" required>
             <mat-hint></mat-hint>
-            @if (nameFormControl.hasError('required')) {
+            @if (!validarNome() && form.get('nome')?.touched) {
               <mat-error>Nome é <strong>obrigatório</strong></mat-error>
             }
           </mat-form-field>
@@ -16,7 +16,7 @@
               <mat-label>CPF</mat-label>
               <input matInput formControlName="cpf" mask="000-000-000.00" placeholder="000-000-000.00" required>
               <mat-hint></mat-hint>
-              @if (cpfFormControl.hasError('required')) {
+              @if (!validarCpf()) {
                   <mat-error>CPF é <strong>obrigatório</strong></mat-error>
                 }
             </mat-form-field>
@@ -53,7 +53,6 @@
           
 
           <app-cep [cepControl]="cepControl"></app-cep>
-          <mat-hint></mat-hint>
       </form>
       <button mat-raised-button (click)="salvarDados()">Salvar</button>
   </mat-card-content>

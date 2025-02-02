@@ -1,0 +1,25 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.search {
+    display: flex;
+    height: 5rem;
+    align-items: center;
+    justify-content: flex-start;
+    width: 90%;
+}
+
+.search button {
+}
+
+.tabela {
+    display: flex;
+    justify-self: center;
+    width: 90%;
+}

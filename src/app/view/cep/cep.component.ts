@@ -8,7 +8,6 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 import { ViacepService } from '../../_services/viacep.service';
 

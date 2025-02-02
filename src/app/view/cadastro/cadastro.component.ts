@@ -48,7 +48,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class CadastroComponent {
     form = new FormGroup({
-      nome: new FormControl('', [Validators.required]),
+      nome: new FormControl(''),
       cpf: new FormControl('', [Validators.required]),
       data: new FormControl('', [Validators.required]),
       cep: new FormControl('', [Validators.required]),
@@ -59,8 +59,8 @@ export class CadastroComponent {
       return this.form.get('cep') as FormControl; // Conversão explícita para FormControl
     }
 
-    nameFormControl = new FormControl('', [Validators.required]);
-    cpfFormControl = new FormControl('', [Validators.required]);
+    // nameFormControl = new FormControl('', [Validators.required]);
+    // cpfFormControl = new FormControl('', [Validators.required]);
     dataFormControl = new FormControl('', [Validators.required]);
     cepFormControl = new FormControl('', [Validators.required]);
     emailFormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -85,22 +85,64 @@ export class CadastroComponent {
       return false;
     }
 
-    validarCpf() : boolean {
+    validarCpf(): boolean {
       const cpf = this.form.get('cpf')?.value;
-      if (cpf?.length == 11) return true;
-      return false;
+      if (!cpf) return false;
+    
+      // Remove a máscara do CPF (pontos e traços)
+      const cpfSemMascara = cpf.replace(/\D/g, '');
+    
+      // Verifica se o CPF tem 11 dígitos
+      if (cpfSemMascara.length !== 11) {
+        return false;
+      }
+    
+      // Verifica se todos os dígitos são iguais (CPF inválido)
+      if (/^(\d)\1{10}$/.test(cpfSemMascara)) {
+        return false;
+      }
+    
+      // Validação dos dígitos verificadores
+      let soma = 0;
+      for (let i = 0; i < 9; i++) {
+        soma += parseInt(cpfSemMascara.charAt(i)) * (10 - i);
+      }
+      let resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpfSemMascara.charAt(9))) {
+        return false;
+      }
+    
+      soma = 0;
+      for (let i = 0; i < 10; i++) {
+        soma += parseInt(cpfSemMascara.charAt(i)) * (11 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpfSemMascara.charAt(10))) {
+        return false;
+      }
+    
+      return true; // CPF válido
+    }
+
+    validarEmail(): boolean {
+      const email: string = this.form.get('email')?.value ?? '';
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
     salvarDados() {
-        if (this.validarCpf() && this.validarNome()) {
+        if (this.validarCpf() && 
+        this.validarNome() && 
+        this.validarEmail()) {
           const formularioCompleto = this.form.value;
           this.dialogRef.close(formularioCompleto); 
         }
 
-        if(this.form.valid) {
-          const nome = this.form.get('nome')?.value ?? '';
-          this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
-        }
+        // if(this.form.valid) {
+        //   const nome = this.form.get('nome')?.value ?? '';
+        //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
+        // }
         // if(this.validarCpf()) {
         //   const nome = this.form.get('cpf')?.value ?? '';
         //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
