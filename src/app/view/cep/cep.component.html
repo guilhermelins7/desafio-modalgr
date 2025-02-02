@@ -1,29 +1,25 @@
-<mat-form-field class="campoForm" [formGroup]="form">
-    <mat-label>CEP</mat-label>
-    <input matInput class="form-control" formControlName="cep" id="cep" mask="00000-000" placeholder="00000-000" required/>
-</mat-form-field>
-
-<div class="twoCol">
-    <mat-form-field class="campoForm" [formGroup]="form">
-        <mat-label>Logradouro</mat-label>
-        <input matInput class="form-control" formControlName="logradouro" id="logradouro" placeholder="Ex: Rua, Av., Travessa" />
-    </mat-form-field>
+<div [formGroup]="form">
+    <div class="twoCol">
+        <mat-form-field class="campoForm" >
+            <mat-label>Logradouro</mat-label>
+            <input matInput class="form-control" formControlName="logradouro" id="logradouro" placeholder="Ex: Rua, Av., Travessa" />
+        </mat-form-field>
+        
+        <mat-form-field class="campoForm" >
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="bairro" id="bairro" placeholder="Ex: Centro, Jardim, Vila" />
+        </mat-form-field>
+    </div>
     
-    <mat-form-field class="campoForm" [formGroup]="form">
-        <mat-label>Bairro</mat-label>
-        <input matInput formControlName="bairro" id="bairro" placeholder="Ex: Centro, Jardim, Vila" />
-    </mat-form-field>
-</div>
-
-
-<div class="twoCol">
-    <mat-form-field class="campoForm" [formGroup]="form">
-        <mat-label>Cidade</mat-label>
-        <input matInput formControlName="cidade" id="cidade" placeholder="Ex: São Paulo" />
-    </mat-form-field>
-    
-    <mat-form-field class="campoForm" [formGroup]="form">
-        <mat-label>Estado</mat-label>
-        <input matInput formControlName="estado" id="estado" placeholder="Ex: SP, RJ" />
-    </mat-form-field>
+    <div class="twoCol">
+        <mat-form-field class="campoForm" >
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="cidade" id="cidade" placeholder="Ex: São Paulo" />
+        </mat-form-field>
+        
+        <mat-form-field class="campoForm" >
+            <mat-label>Estado</mat-label>
+            <input matInput formControlName="estado" id="estado" placeholder="Ex: SP, RJ" />
+        </mat-form-field>
+    </div>
 </div>

@@ -51,12 +51,18 @@ export class CadastroComponent {
       nome: new FormControl('', [Validators.required]),
       cpf: new FormControl('', [Validators.required]),
       data: new FormControl('', [Validators.required]),
+      cep: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email])
     });
+
+    get cepControl(): FormControl {
+      return this.form.get('cep') as FormControl; // Conversão explícita para FormControl
+    }
 
     nameFormControl = new FormControl('', [Validators.required]);
     cpfFormControl = new FormControl('', [Validators.required]);
     dataFormControl = new FormControl('', [Validators.required]);
+    cepFormControl = new FormControl('', [Validators.required]);
     emailFormControl = new FormControl('', [Validators.required, Validators.email]);
     matcher = new MyErrorStateMatcher();
 

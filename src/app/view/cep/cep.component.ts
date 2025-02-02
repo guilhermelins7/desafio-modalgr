@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -26,6 +27,7 @@ import { ViacepService } from '../../_services/viacep.service';
   styleUrl: './cep.component.scss'
 })
 export class CepComponent implements OnInit {
+  @Input() cepControl!: FormControl; // Recebe o FormControl de CEP do componente pai
   
   // Lidando com Forms:
   form: FormGroup = new FormGroup({});
@@ -39,7 +41,6 @@ export class CepComponent implements OnInit {
 
   initializeForm() {
     this.form = this.fb.group({
-      cep: ['', [Validators.required]],
       logradouro: [{value: '', disabled: true}],
       bairro: [{value: '', disabled: true}],
       cidade: [{value: '', disabled: true}],
@@ -49,9 +50,9 @@ export class CepComponent implements OnInit {
 
   observePreenchimentoCep() {
     // Subscribe definine aqui o funcionamento do watcher
-    this.form.get('cep')?.valueChanges.subscribe(value => {
+    this.cepControl.valueChanges.subscribe(value => {
       if (value?.length === 8) {
-        this.buscarCep(); // Faz a busca sempre que um CEP de 8 caracteres for digitado
+        this.buscarCep(value); // Faz a busca sempre que um CEP de 8 caracteres for digitado
       } else if (value?.length < 8) {
         this.form.patchValue({
           logradouro: '',
@@ -63,8 +64,7 @@ export class CepComponent implements OnInit {
     });
   }
 
-  buscarCep() {
-    var cep = this.form.get('cep')?.value;
+  buscarCep(cep: string) {
     this.viaCepService.getEnderecoByCep(cep).subscribe({
       next: (response) => {
         this.form.patchValue({

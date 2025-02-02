@@ -26,7 +26,10 @@ import { CadastroComponent } from '../cadastro/cadastro.component';
 })
 export class HomeComponent {
   readonly dialog = inject(MatDialog);
-  formulario: object | undefined = {}
+  formulario = {
+    nome: '',
+    cpf: ''
+  };
   
   openDialog(): void {
     const dialogRef = this.dialog.open(CadastroComponent);

@@ -11,7 +11,7 @@
             }
           </mat-form-field>
 
-          <!-- <div class="twoCol"> -->
+          <div class="twoCol">
             <mat-form-field class="campoForm">
               <mat-label>CPF</mat-label>
               <input matInput formControlName="cpf" mask="000-000-000.00" placeholder="000-000-000.00" required>
@@ -21,7 +21,7 @@
                 }
             </mat-form-field>
 
-            <!-- <mat-form-field class="campoForm">
+            <mat-form-field class="campoForm">
               <mat-label>Data de nascimento</mat-label>
               <input matInput formControlName="data" mask="00/00/0000" placeholder="dd/mm/yyyy" required>
               <mat-hint></mat-hint>
@@ -43,8 +43,17 @@
             }
           </mat-form-field>
 
-          <app-cep></app-cep>
-          <mat-hint></mat-hint> -->
+          <mat-form-field class="campoForm" formControlName="cep">
+            <mat-label>CEP</mat-label>
+            <input matInput class="form-control" formControlName="cep" id="cep" mask="00000-000" placeholder="00000-000" required/>
+            @if (cepFormControl.hasError('required')) {
+              <mat-error>cep é <strong>obrigatório</strong></mat-error>
+            }
+          </mat-form-field>
+          
+
+          <app-cep [cepControl]="cepControl"></app-cep>
+          <mat-hint></mat-hint>
       </form>
       <button mat-raised-button (click)="salvarDados()">Salvar</button>
   </mat-card-content>
