@@ -45,6 +45,14 @@ export class CadastroComponent {
 
     emailFormControl = new FormControl('', [Validators.required, Validators.email]);
 
-
     matcher = new MyErrorStateMatcher();
+
+    filtroNome(event: any) {
+      const value = event.target.value;
+    
+      // Limita a quantidade de caracteres a 20 e remove qualquer caractere inválido, utilizando ASC
+      const sanitizedValue = value.replace(/[^\p{L}\s]/gu, '').slice(0, 150);
+    
+      event.target.value = sanitizedValue;
+    }
 }
