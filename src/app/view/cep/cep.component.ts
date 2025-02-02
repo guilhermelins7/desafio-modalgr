@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import {
   FormBuilder,
   FormGroup,
@@ -17,7 +18,9 @@ import { ViacepService } from '../../_services/viacep.service';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
   ],
   templateUrl: './cep.component.html',
   styleUrl: './cep.component.scss'
