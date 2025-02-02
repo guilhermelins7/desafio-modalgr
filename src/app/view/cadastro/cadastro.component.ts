@@ -15,6 +15,9 @@ import {
 import {ErrorStateMatcher} from '@angular/material/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -35,19 +38,26 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     CepComponent,
     FormsModule,
     MatFormFieldModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule
   ],
   templateUrl: './cadastro.component.html',
   styleUrl: './cadastro.component.scss'
 })
 export class CadastroComponent {
-  form = new FormGroup({
-    nome: new FormControl('', [Validators.required]),
-    cpf: new FormControl('', [Validators.required]),
-    data: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email])
-  });
+    form = new FormGroup({
+      nome: new FormControl('', [Validators.required]),
+      cpf: new FormControl('', [Validators.required]),
+      data: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email])
+    });
 
+    nameFormControl = new FormControl('', [Validators.required]);
+    cpfFormControl = new FormControl('', [Validators.required]);
+    dataFormControl = new FormControl('', [Validators.required]);
+    emailFormControl = new FormControl('', [Validators.required, Validators.email]);
     matcher = new MyErrorStateMatcher();
 
     filtroNome(event: any) {
@@ -64,10 +74,30 @@ export class CadastroComponent {
       @Inject(MAT_DIALOG_DATA) public data: any
     ) {}
 
+    validarNome() : boolean {
+      if(this.form.get('nome')?.value != '') return true;
+      return false;
+    }
+
+    validarCpf() : boolean {
+      const cpf = this.form.get('cpf')?.value;
+      if (cpf?.length == 11) return true;
+      return false;
+    }
+
     salvarDados() {
-        if(this.form.get('nome')?.value != '') {
+        if (this.validarCpf() && this.validarNome()) {
+          const formularioCompleto = this.form.value;
+          this.dialogRef.close(formularioCompleto); 
+        }
+
+        if(this.form.valid) {
           const nome = this.form.get('nome')?.value ?? '';
           this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
         }
+        // if(this.validarCpf()) {
+        //   const nome = this.form.get('cpf')?.value ?? '';
+        //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
+        // }
     }
 }
