@@ -3,6 +3,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { EmailComponent } from '../email/email.component';
+import { CepComponent } from '../cep/cep.component';
 
 @Component({
   selector: 'app-cadastro',
@@ -12,11 +13,11 @@ import { EmailComponent } from '../email/email.component';
     MatInputModule,
     NgxMaskDirective,
     NgxMaskPipe,
-    EmailComponent
+    EmailComponent,
+    CepComponent
   ],
   templateUrl: './cadastro.component.html',
   styleUrl: './cadastro.component.scss'
 })
 export class CadastroComponent {
-
 }
