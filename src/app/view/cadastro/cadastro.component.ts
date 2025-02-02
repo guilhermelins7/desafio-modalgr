@@ -2,7 +2,6 @@ import {Component, Inject} from '@angular/core';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
-import { CepComponent } from '../cep/cep.component';
 import {
   FormControl,
   FormGroupDirective,
@@ -18,6 +17,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { ViacepService } from '../../_services/viacep.service';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -35,7 +35,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatInputModule,
     NgxMaskDirective,
     NgxMaskPipe,
-    CepComponent,
     FormsModule,
     MatFormFieldModule,
     ReactiveFormsModule,
@@ -52,7 +51,11 @@ export class CadastroComponent {
       cpf: new FormControl('', [Validators.required]),
       data: new FormControl('', [Validators.required]),
       cep: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email])
+      email: new FormControl('', [Validators.required, Validators.email]),
+      logradouro: new FormControl({ value: '', disabled: true }),
+      bairro: new FormControl({ value: '', disabled: true }),
+      cidade: new FormControl({ value: '', disabled: true }),
+      estado: new FormControl({ value: '', disabled: true })
     });
 
     get cepControl(): FormControl {
@@ -77,8 +80,44 @@ export class CadastroComponent {
 
     constructor(
       public dialogRef: MatDialogRef<CadastroComponent>,
-      @Inject(MAT_DIALOG_DATA) public data: any
+      @Inject(MAT_DIALOG_DATA) public data: any,
+      private viaCepService: ViacepService
     ) {}
+
+    ngOnInit(): void {
+      this.observePreenchimentoCep();
+    }
+
+    observePreenchimentoCep() {
+      this.form.get('cep')?.valueChanges.subscribe(value => {
+        if (value && value.length === 8) { // Verifica se value não é undefined
+          this.buscarCep(value); // Faz a busca sempre que um CEP de 8 caracteres for digitado
+        } else if (value && value.length < 8) { // Verifica se value não é undefined
+          this.form.patchValue({
+            logradouro: '',
+            bairro: '',
+            cidade: '',
+            estado: ''
+          });
+        }
+      });
+    }
+
+    buscarCep(cep: string) {
+      this.viaCepService.getEnderecoByCep(cep).subscribe({
+        next: (response) => {
+          this.form.patchValue({
+            logradouro: response.logradouro,
+            bairro: response.bairro,
+            cidade: response.localidade,
+            estado: response.uf
+          });
+        },
+        error: () => {
+          alert("Erro ao buscar o CEP");
+        }
+      });
+    }
 
     validarNome() : boolean {
       if(this.form.get('nome')?.value != '') return true;
@@ -131,21 +170,32 @@ export class CadastroComponent {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    salvarDados() {
-        if (this.validarCpf() && 
-        this.validarNome() && 
-        this.validarEmail()) {
-          const formularioCompleto = this.form.value;
-          this.dialogRef.close(formularioCompleto); 
-        }
+    // salvarDados() {
+    //     if (this.validarCpf() && 
+    //     this.validarNome() && 
+    //     this.validarEmail()) {
+    //       const formularioCompleto = this.form.value;
+    //       this.dialogRef.close(formularioCompleto); 
+    //     }
 
-        // if(this.form.valid) {
-        //   const nome = this.form.get('nome')?.value ?? '';
-        //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
-        // }
-        // if(this.validarCpf()) {
-        //   const nome = this.form.get('cpf')?.value ?? '';
-        //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
-        // }
+    //     // if(this.form.valid) {
+    //     //   const nome = this.form.get('nome')?.value ?? '';
+    //     //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
+    //     // }
+    //     // if(this.validarCpf()) {
+    //     //   const nome = this.form.get('cpf')?.value ?? '';
+    //     //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
+    //     // }
+    // }
+
+    salvarDados() {
+      const formularioCompleto = {
+        ...this.form.value,
+        logradouro: this.form.get('logradouro')?.value,
+        bairro: this.form.get('bairro')?.value,
+        cidade: this.form.get('cidade')?.value,
+        estado: this.form.get('estado')?.value
+      };
+      this.dialogRef.close(formularioCompleto); // Retorna todos os dados do formulário
     }
 }

@@ -12,7 +12,7 @@ import { Data } from '@angular/router';
 export interface Funcionario {
   nome: string;
   email: string;
-  idade: Data;
+  idade: string;
   cpf: string;
   cep: string;
   logradouro: string;
@@ -40,13 +40,15 @@ const ELEMENT_DATA: Funcionario[] = [
 
 export class HomeComponent {
   readonly dialog = inject(MatDialog);
+
+  formulario : object | undefined;
   
   openDialog(): void {
     const dialogRef = this.dialog.open(CadastroComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.dataSource = [...this.dataSource, result];
-        // alert(JSON.stringify(this.formulario, null, 2))
+        alert(JSON.stringify(this.formulario, null, 2))
       }
     });
   }
