@@ -57,16 +57,7 @@ export class CadastroComponent {
       cidade: new FormControl({ value: '', disabled: true }),
       estado: new FormControl({ value: '', disabled: true })
     });
-
-    get cepControl(): FormControl {
-      return this.form.get('cep') as FormControl; // Conversão explícita para FormControl
-    }
-
-    // nameFormControl = new FormControl('', [Validators.required]);
-    // cpfFormControl = new FormControl('', [Validators.required]);
-    dataFormControl = new FormControl('', [Validators.required]);
-    cepFormControl = new FormControl('', [Validators.required]);
-    emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+    
     matcher = new MyErrorStateMatcher();
 
     filtroNome(event: any) {
@@ -161,7 +152,6 @@ export class CadastroComponent {
       if (resto !== parseInt(cpfSemMascara.charAt(10))) {
         return false;
       }
-    
       return true; // CPF válido
     }
 
@@ -170,32 +160,18 @@ export class CadastroComponent {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    // salvarDados() {
-    //     if (this.validarCpf() && 
-    //     this.validarNome() && 
-    //     this.validarEmail()) {
-    //       const formularioCompleto = this.form.value;
-    //       this.dialogRef.close(formularioCompleto); 
-    //     }
-
-    //     // if(this.form.valid) {
-    //     //   const nome = this.form.get('nome')?.value ?? '';
-    //     //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
-    //     // }
-    //     // if(this.validarCpf()) {
-    //     //   const nome = this.form.get('cpf')?.value ?? '';
-    //     //   this.dialogRef.close(nome); // Fecha o diálogo e retorna o nome
-    //     // }
-    // }
-
     salvarDados() {
-      const formularioCompleto = {
-        ...this.form.value,
-        logradouro: this.form.get('logradouro')?.value,
-        bairro: this.form.get('bairro')?.value,
-        cidade: this.form.get('cidade')?.value,
-        estado: this.form.get('estado')?.value
-      };
-      this.dialogRef.close(formularioCompleto); // Retorna todos os dados do formulário
+      if (this.validarCpf() && 
+      this.validarNome() && 
+      this.validarEmail()) {
+        const formularioCompleto = {
+          ...this.form.value,
+          logradouro: this.form.get('logradouro')?.value,
+          bairro: this.form.get('bairro')?.value,
+          cidade: this.form.get('cidade')?.value,
+          estado: this.form.get('estado')?.value
+        };
+        this.dialogRef.close(formularioCompleto); // Retorna todos os dados do formulário
+      }
     }
 }

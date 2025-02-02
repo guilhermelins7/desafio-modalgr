@@ -7,7 +7,7 @@ import {
 } from '@angular/material/dialog';
 import { CadastroComponent } from '../cadastro/cadastro.component';
 import {MatTableModule} from '@angular/material/table';
-import { Data } from '@angular/router';
+import { HeaderComponent } from '../header/header.component';
 
 export interface Funcionario {
   nome: string;
@@ -32,7 +32,8 @@ const ELEMENT_DATA: Funcionario[] = [
     MatButtonModule,
     MatDividerModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    HeaderComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'

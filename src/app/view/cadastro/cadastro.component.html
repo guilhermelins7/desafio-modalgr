@@ -1,80 +1,136 @@
 <mat-card appearance="outlined" class="card-container">
-    <mat-card-content class="card">
-        <h1>Cadastrar novo Colaborador</h1>
-        <form class="formulario" [formGroup]="form">
-          <mat-form-field class="campoForm">
-            <mat-label>Nome</mat-label>
-            <input matInput type="text" (keyup)="filtroNome($event)" formControlName="nome" placeholder="Seu nome completo" required>
-            <mat-hint></mat-hint>
-            @if (!validarNome() && form.get('nome')?.touched) {
-              <mat-error>Nome é <strong>obrigatório</strong></mat-error>
-            }
-          </mat-form-field>
+  <mat-card-content class="card">
+    <h1>Cadastrar novo Colaborador</h1>
+    <form class="formulario" [formGroup]="form">
+      <!-- Campo Nome -->
+      <mat-form-field class="campoForm">
+        <mat-label>Nome</mat-label>
+        <input
+          matInput
+          type="text"
+          (keyup)="filtroNome($event)"
+          formControlName="nome"
+          placeholder="Seu nome completo"
+          required
+        >
+        <mat-hint></mat-hint>
+        @if (!validarNome() && form.get('nome')?.touched) {
+          <mat-error>Nome é <strong>obrigatório</strong></mat-error>
+        }
+      </mat-form-field>
 
-          <div class="twoCol">
-            <mat-form-field class="campoForm">
-              <mat-label>CPF</mat-label>
-              <input matInput formControlName="cpf" mask="000-000-000.00" placeholder="000-000-000.00" required>
-              <mat-hint></mat-hint>
-              @if (!validarCpf()) {
-                  <mat-error>CPF é <strong>obrigatório</strong></mat-error>
-                }
-            </mat-form-field>
+      <!-- Campo CPF -->
+      <div class="twoCol">
+        <mat-form-field class="campoForm">
+          <mat-label>CPF</mat-label>
+          <input
+            matInput
+            formControlName="cpf"
+            mask="000.000.000-00"
+            placeholder="000.000.000-00"
+            required
+          >
+          <mat-hint></mat-hint>
+          @if (!validarCpf() && form.get('cpf')?.touched) {
+            <mat-error>CPF é <strong>obrigatório</strong></mat-error>
+          }
+        </mat-form-field>
 
-            <mat-form-field class="campoForm">
-              <mat-label>Data de nascimento</mat-label>
-              <input matInput formControlName="data" mask="00/00/0000" placeholder="dd/mm/yyyy" required>
-              <mat-hint></mat-hint>
-              @if (dataFormControl.hasError('required')) {
-                  <mat-error>Data de nascimento é <strong>obrigatória</strong></mat-error>
-                }
-            </mat-form-field>
-          </div>
+        <!-- Campo Data de Nascimento -->
+        <mat-form-field class="campoForm">
+          <mat-label>Data de nascimento</mat-label>
+          <input
+            matInput
+            formControlName="data"
+            mask="00/00/0000"
+            placeholder="dd/mm/yyyy"
+            required
+          >
+          <mat-hint></mat-hint>
+          @if (form.get('data')?.hasError('required') && form.get('data')?.touched) {
+            <mat-error>Data de nascimento é <strong>obrigatória</strong></mat-error>
+          }
+        </mat-form-field>
+      </div>
 
-          <mat-form-field class="campoForm">
-            <mat-label>e-mail</mat-label>
-            <input type="email" maxlength="200" matInput formControlName="email" [errorStateMatcher]="matcher" placeholder="email@exemplo.com" required>
-            <mat-hint></mat-hint>
-            @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
-              <mat-error>Por favor, insira um e-mail válido</mat-error>
-            }
-            @if (emailFormControl.hasError('required')) {
-              <mat-error>e-mail é <strong>obrigatório</strong></mat-error>
-            }
-          </mat-form-field>
+      <!-- Campo E-mail -->
+      <mat-form-field class="campoForm">
+        <mat-label>E-mail</mat-label>
+        <input
+          type="email"
+          maxlength="200"
+          matInput
+          formControlName="email"
+          [errorStateMatcher]="matcher"
+          placeholder="email@exemplo.com"
+          required
+        >
+        <mat-hint></mat-hint>
+        @if (form.get('email')?.hasError('email') && !form.get('email')?.hasError('required')) {
+          <mat-error>Por favor, insira um e-mail válido</mat-error>
+        }
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>E-mail é <strong>obrigatório</strong></mat-error>
+        }
+      </mat-form-field>
 
-          <mat-form-field class="campoForm" formControlName="cep">
-            <mat-label>CEP</mat-label>
-            <input matInput class="form-control" formControlName="cep" id="cep" mask="00000-000" placeholder="00000-000" required/>
-            @if (cepFormControl.hasError('required')) {
-              <mat-error>cep é <strong>obrigatório</strong></mat-error>
-            }
-          </mat-form-field>
-          
-          <div class="twoCol">
-            <mat-form-field class="campoForm" >
-                <mat-label>Logradouro</mat-label>
-                <input matInput class="form-control" formControlName="logradouro" id="logradouro" placeholder="Ex: Rua, Av., Travessa" />
-            </mat-form-field>
-            
-            <mat-form-field class="campoForm" >
-                <mat-label>Bairro</mat-label>
-                <input matInput formControlName="bairro" id="bairro" placeholder="Ex: Centro, Jardim, Vila" />
-            </mat-form-field>
-        </div>
-        
-        <div class="twoCol">
-            <mat-form-field class="campoForm" >
-                <mat-label>Cidade</mat-label>
-                <input matInput formControlName="cidade" id="cidade" placeholder="Ex: São Paulo" />
-            </mat-form-field>
-            
-            <mat-form-field class="campoForm" >
-                <mat-label>Estado</mat-label>
-                <input matInput formControlName="estado" id="estado" placeholder="Ex: SP, RJ" />
-            </mat-form-field>
-        </div>
-      </form>
-      <button mat-raised-button (click)="salvarDados()">Salvar</button>
+      <!-- Campo CEP -->
+      <mat-form-field class="campoForm">
+        <mat-label>CEP</mat-label>
+        <input
+          matInput
+          formControlName="cep"
+          mask="00000-000"
+          placeholder="00000-000"
+          required
+        >
+        <mat-hint></mat-hint>
+        @if (form.get('cep')?.hasError('required') && form.get('cep')?.touched) {
+          <mat-error>CEP é <strong>obrigatório</strong></mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Campos de Endereço -->
+      <div class="twoCol">
+        <mat-form-field class="campoForm">
+          <mat-label>Logradouro</mat-label>
+          <input
+            matInput
+            formControlName="logradouro"
+            placeholder="Ex: Rua, Av., Travessa"
+          >
+        </mat-form-field>
+
+        <mat-form-field class="campoForm">
+          <mat-label>Bairro</mat-label>
+          <input
+            matInput
+            formControlName="bairro"
+            placeholder="Ex: Centro, Jardim, Vila"
+          >
+        </mat-form-field>
+      </div>
+
+      <div class="twoCol">
+        <mat-form-field class="campoForm">
+          <mat-label>Cidade</mat-label>
+          <input
+            matInput
+            formControlName="cidade"
+            placeholder="Ex: São Paulo"
+          >
+        </mat-form-field>
+
+        <mat-form-field class="campoForm">
+          <mat-label>Estado</mat-label>
+          <input
+            matInput
+            formControlName="estado"
+            placeholder="Ex: SP, RJ"
+          >
+        </mat-form-field>
+      </div>
+    </form>
+    <button mat-raised-button (click)="salvarDados()">Salvar</button>
   </mat-card-content>
 </mat-card>
