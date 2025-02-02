@@ -1,0 +1,24 @@
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: aliceblue;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #493939;
+    background-color: rgba(0, 0, 0, 0.2); /* Preto com 20% de opacidade */
+}
+
+.card h1 {
+}
+
+.formulario {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
