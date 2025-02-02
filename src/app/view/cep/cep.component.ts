@@ -39,11 +39,19 @@ export class CepComponent implements OnInit {
   }
 
   observePreenchimentoCep() {
+    // Subscribe definine aqui o funcionamento do watcher
     this.form.get('cep')?.valueChanges.subscribe(value => {
-      if(value?.length == 8) {
-        this.buscarCep();
+      if (value?.length === 8) {
+        this.buscarCep(); // Faz a busca sempre que um CEP de 8 caracteres for digitado
+      } else if (value?.length < 8) {
+        this.form.patchValue({
+          logradouro: '',
+          bairro: '',
+          cidade: '',
+          estado: ''
+        });
       }
-    })
+    });
   }
 
   buscarCep() {
