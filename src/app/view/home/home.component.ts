@@ -26,8 +26,14 @@ import { CadastroComponent } from '../cadastro/cadastro.component';
 })
 export class HomeComponent {
   readonly dialog = inject(MatDialog);
+  nomeRecebido: string = '';
   
   openDialog(): void {
     const dialogRef = this.dialog.open(CadastroComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.nomeRecebido = result; // Recebe o nome retornado pelo diálogo
+      }
+    });
   }
 }

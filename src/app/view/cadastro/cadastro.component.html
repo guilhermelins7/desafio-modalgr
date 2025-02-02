@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" class="card-container">
+<!-- <mat-card appearance="outlined" class="card-container">
     <mat-card-content class="card">
         <h1>Cadastrar novo Colaborador</h1>
         <form class="formulario">
@@ -49,4 +49,19 @@
         </form>
     </mat-card-content>
 </mat-card>
+   -->
+
+   <form [formGroup]="form">
+    <mat-form-field class="campoForm">
+      <mat-label>Nome</mat-label>
+      <input matInput type="text" (keyup)="filtroNome($event)" formControlName="nome" placeholder="Seu nome completo" required>
+      <mat-hint></mat-hint>
+      @if (form.get('nome')?.hasError('required')) {
+        <mat-error>Nome é <strong>obrigatório</strong></mat-error>
+      }
+    </mat-form-field>
   
+    <!-- Adicione outros campos do formulário aqui, se necessário -->
+  
+    <button mat-button (click)="salvarDados()">Salvar</button>
+  </form>
