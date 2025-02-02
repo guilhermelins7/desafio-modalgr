@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { CadastroComponent } from './view/cadastro/cadastro.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { HomeComponent } from './view/home/home.component';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
     CadastroComponent,
     MatSlideToggleModule,
     NgxMaskDirective,
-    NgxMaskPipe
+    NgxMaskPipe,
+    HomeComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
