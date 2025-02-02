@@ -49,7 +49,6 @@ export class HomeComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.dataSource = [...this.dataSource, result];
-        alert(JSON.stringify(this.formulario, null, 2))
       }
     });
   }

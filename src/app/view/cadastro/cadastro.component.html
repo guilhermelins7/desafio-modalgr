@@ -131,6 +131,9 @@
         </mat-form-field>
       </div>
     </form>
-    <button mat-raised-button (click)="salvarDados()">Salvar</button>
+    <div class="botoes">
+      <button mat-raised-button (click)="salvarDados()" class="save">Salvar</button>
+      <button mat-raised-button (click)="onNoClick()" class="cancel">Cancelar</button>
+    </div>
   </mat-card-content>
 </mat-card>

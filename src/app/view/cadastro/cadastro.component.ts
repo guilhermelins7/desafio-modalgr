@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { ViacepService } from '../../_services/viacep.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -72,7 +73,8 @@ export class CadastroComponent {
     constructor(
       public dialogRef: MatDialogRef<CadastroComponent>,
       @Inject(MAT_DIALOG_DATA) public data: any,
-      private viaCepService: ViacepService
+      private viaCepService: ViacepService,
+      private snackBar: MatSnackBar
     ) {}
 
     ngOnInit(): void {
@@ -160,10 +162,12 @@ export class CadastroComponent {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
+    onNoClick(): void {
+      this.dialogRef.close();
+    }
+
     salvarDados() {
-      if (this.validarCpf() && 
-      this.validarNome() && 
-      this.validarEmail()) {
+      if (this.form.valid && this.validarNome() && this.validarCpf() && this.validarEmail()) {
         const formularioCompleto = {
           ...this.form.value,
           logradouro: this.form.get('logradouro')?.value,
@@ -171,7 +175,43 @@ export class CadastroComponent {
           cidade: this.form.get('cidade')?.value,
           estado: this.form.get('estado')?.value
         };
-        this.dialogRef.close(formularioCompleto); // Retorna todos os dados do formulário
+        this.dialogRef.close(formularioCompleto); // Fecha o diálogo e retorna os dados
+      } else {
+        this.exibirAlertaCamposInvalidos(); // Exibe o Snackbar com os campos inválidos
       }
+    }
+  
+    exibirAlertaCamposInvalidos() {
+      let mensagem = 'Erro: corrija os campos\n';
+  
+      if (!this.validarNome()) {
+        mensagem += '| Nome |\n';
+      }
+  
+      if (!this.validarCpf()) {
+        mensagem += 'CPF |\n';
+      }
+  
+      if (this.form.get('data')?.invalid) {
+        mensagem += 'Data de nascimento |\n';
+      }
+  
+      if (this.form.get('email')?.invalid) {
+        mensagem += ' E-mail |\n';
+      }
+  
+      if (this.form.get('cep')?.invalid) {
+        mensagem += ' CEP |\n';
+      }
+  
+      this.exibirSnackbar(mensagem); // Exibe o Snackbar com a mensagem
+    }
+  
+    exibirSnackbar(mensagem: string, acao: string = 'Fechar', duracao: number = 5000) {
+      this.snackBar.open(mensagem, acao, {
+        duration: duracao, // Duração em milissegundos (5 segundos por padrão)
+        horizontalPosition: 'center', // Posição horizontal (center, start, end)
+        verticalPosition: 'bottom', // Posição vertical (top, bottom)
+      });
     }
 }

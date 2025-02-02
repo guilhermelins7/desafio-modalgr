@@ -2,14 +2,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: aliceblue;
+    background-color: rgb(255, 255, 255);
 }
 
 .card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.2); /* Preto com 20% de opacidade */
+    background-color: rgba(255, 255, 255, 0.2); /* Preto com 20% de opacidade */
 }
 
 .card h1 {
@@ -21,7 +21,23 @@
     flex-direction: column;
 }
 
-button {
+.botoes {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    width: 100%;
+}
+
+.botoes button {
+    color: #ffe;
     height: 2.5rem;
     width: 100%;
+}
+
+.botoes .cancel {
+    background-color: red;
+}
+
+.botoes .save {
+    background-color: var(--main-color);
 }
