@@ -40,7 +40,11 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class CadastroComponent {
     nameFormControl = new FormControl('', [Validators.required]);
+    cpfFormControl = new FormControl('', [Validators.required]);
+    dataFormControl = new FormControl('', [Validators.required]);
+
     emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-  
+
+
     matcher = new MyErrorStateMatcher();
 }
