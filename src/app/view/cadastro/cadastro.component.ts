@@ -167,7 +167,7 @@ export class CadastroComponent {
     }
 
     salvarDados() {
-      if (this.form.valid && this.validarNome() && this.validarCpf() && this.validarEmail()) {
+      if (this.validarNome() && this.validarCpf() && this.validarEmail()) {
         const formularioCompleto = {
           ...this.form.value,
           logradouro: this.form.get('logradouro')?.value,
