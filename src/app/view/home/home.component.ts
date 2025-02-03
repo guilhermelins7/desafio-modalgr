@@ -12,7 +12,7 @@ import { HeaderComponent } from '../header/header.component';
 export interface Funcionario {
   nome: string;
   email: string;
-  idade: string;
+  data: string;
   cpf: string;
   cep: string;
   logradouro: string;
@@ -53,6 +53,6 @@ export class HomeComponent {
     });
   }
 
-  displayedColumns: string[] = ['nome', 'email', 'idade', 'cpf', 'cep', 'logradouro', 'bairro', 'cidade', 'estado'];
+  displayedColumns: string[] = ['nome', 'email', 'data', 'cpf', 'cep', 'logradouro', 'bairro', 'cidade', 'estado'];
   dataSource = ELEMENT_DATA;
 }
