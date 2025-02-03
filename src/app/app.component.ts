@@ -4,6 +4,7 @@ import { CadastroComponent } from './view/cadastro/cadastro.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { HomeComponent } from './view/home/home.component';
+import { HeaderComponent } from './view/header/header.component';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ import { HomeComponent } from './view/home/home.component';
     MatSlideToggleModule,
     NgxMaskDirective,
     NgxMaskPipe,
-    HomeComponent
+    HomeComponent,
+    HeaderComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
