@@ -168,12 +168,20 @@ export class CadastroComponent {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
+  validarCep(): boolean {
+    if (this.form.get('cidade')?.value == '' || this.form.get('cidade')?.value == undefined) return false;
+    return true;
+  }
+
   onNoClick(): void {
     this.dialogRef.close();
   }
 
   salvarDados() {
-    if (this.form.valid) {
+    if (this.form.valid && 
+      this.validarCep() &&
+      this.validarCpf()
+    ) {
       const dados = this.form.getRawValue();
       if (dados.data) {
         // Aplicar "macara":
@@ -209,26 +217,26 @@ export class CadastroComponent {
   }
 
   exibirAlertaCamposInvalidos() {
-    let mensagem = 'Corrija os campos:\n';
+    let mensagem = 'Campos inválidos:\n';
 
     if (!this.validarNome()) {
-      mensagem += '| Nome |\n';
+      mensagem += '| Nome\n';
     }
 
     if (!this.validarCpf()) {
-      mensagem += 'CPF |\n';
+      mensagem += '| CPF\n';
     }
 
     if (this.form.get('data')?.invalid) {
-      mensagem += 'Data de nascimento |\n';
+      mensagem += '| Data de nascimento\n';
     }
 
     if (this.form.get('email')?.invalid) {
-      mensagem += ' E-mail |\n';
+      mensagem += '| E-mail\n';
     }
 
-    if (this.form.get('cep')?.invalid) {
-      mensagem += ' CEP |\n';
+    if (!this.validarCep()) {
+      mensagem += '| CEP\n';
     }
 
     this.exibirSnackbar(mensagem); // Exibe o Snackbar com a mensagem

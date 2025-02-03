@@ -30,7 +30,7 @@
           <input matInput formControlName="data" mask="00/00/0000" placeholder="dd/mm/yyyy" required>
           <mat-hint></mat-hint>
           @if (form.get('data')?.hasError('required') && form.get('data')?.touched) {
-          <mat-error>Data de nascimento é <strong>obrigatória</strong></mat-error>
+          <mat-error>Data é <strong>obrigatória</strong></mat-error>
           }
         </mat-form-field>
       </div>
