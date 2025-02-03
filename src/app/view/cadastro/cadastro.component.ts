@@ -1,6 +1,6 @@
-import {Component, Inject} from '@angular/core';
-import {MatCardModule} from '@angular/material/card';
-import {MatInputModule} from '@angular/material/input';
+import { Component, Inject } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import {
   FormControl,
@@ -11,10 +11,11 @@ import {
   ReactiveFormsModule,
   FormGroup,
 } from '@angular/forms';
-import {ErrorStateMatcher} from '@angular/material/core';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { ViacepService } from '../../_services/viacep.service';
@@ -22,9 +23,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(
+    control: FormControl | null,
+    form: FormGroupDirective | NgForm | null
+  ): boolean {
     const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched || isSubmitted)
+    );
   }
 }
 
@@ -41,177 +49,200 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     ReactiveFormsModule,
     MatButtonModule,
     MatDividerModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './cadastro.component.html',
-  styleUrl: './cadastro.component.scss'
+  styleUrl: './cadastro.component.scss',
 })
 export class CadastroComponent {
-    form = new FormGroup({
-      nome: new FormControl(''),
-      cpf: new FormControl('', [Validators.required]),
-      data: new FormControl('', [Validators.required]),
-      cep: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      logradouro: new FormControl({ value: '', disabled: true }),
-      bairro: new FormControl({ value: '', disabled: true }),
-      cidade: new FormControl({ value: '', disabled: true }),
-      estado: new FormControl({ value: '', disabled: true })
+  constructor(
+    public dialogRef: MatDialogRef<CadastroComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private viaCepService: ViacepService,
+    private snackBar: MatSnackBar
+  ) {}
+
+  form = new FormGroup({
+    nome: new FormControl(''),
+    cpf: new FormControl('', [Validators.required]),
+    data: new FormControl('', [Validators.required]),
+    cep: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    logradouro: new FormControl({ value: '', disabled: true }),
+    bairro: new FormControl({ value: '', disabled: true }),
+    cidade: new FormControl({ value: '', disabled: true }),
+    estado: new FormControl({ value: '', disabled: true }),
+    idade: new FormControl({ value: 0, disabled: true }),
+  });
+
+  matcher = new MyErrorStateMatcher();
+
+  filtroNome(event: any) {
+    const value = event.target.value;
+
+    const sanitizedValue = value.replace(/[^\p{L}\s]/gu, '').slice(0, 150);
+
+    event.target.value = sanitizedValue;
+  }
+
+  ngOnInit(): void {
+    this.observePreenchimentoCep();
+  }
+
+  observePreenchimentoCep() {
+    this.form.get('cep')?.valueChanges.subscribe((value) => {
+      if (value && value.length === 8) {
+        // Verifica se value não é undefined
+        this.buscarCep(value); // Faz a busca sempre que um CEP de 8 caracteres for digitado
+      } else if (value && value.length < 8) {
+        // Verifica se value não é undefined
+        this.form.patchValue({
+          logradouro: '',
+          bairro: '',
+          cidade: '',
+          estado: '',
+        });
+      }
     });
-    
-    matcher = new MyErrorStateMatcher();
+  }
 
-    filtroNome(event: any) {
-      const value = event.target.value;
-    
-      // Limita a quantidade de caracteres a 20 e remove qualquer caractere inválido, utilizando ASC
-      const sanitizedValue = value.replace(/[^\p{L}\s]/gu, '').slice(0, 150);
-    
-      event.target.value = sanitizedValue;
-    }
+  buscarCep(cep: string) {
+    this.viaCepService.getEnderecoByCep(cep).subscribe({
+      next: (response) => {
+        this.form.patchValue({
+          logradouro: response.logradouro,
+          bairro: response.bairro,
+          cidade: response.localidade,
+          estado: response.uf,
+        });
+      },
+      error: () => {
+        alert('Erro ao buscar o CEP');
+      },
+    });
+  }
 
-    constructor(
-      public dialogRef: MatDialogRef<CadastroComponent>,
-      @Inject(MAT_DIALOG_DATA) public data: any,
-      private viaCepService: ViacepService,
-      private snackBar: MatSnackBar
-    ) {}
+  validarNome(): boolean {
+    if (this.form.get('nome')?.value != '') return true;
+    return false;
+  }
 
-    ngOnInit(): void {
-      this.observePreenchimentoCep();
-    }
+  validarCpf(): boolean {
+    const cpf = this.form.get('cpf')?.value;
+    if (!cpf) return false;
 
-    observePreenchimentoCep() {
-      this.form.get('cep')?.valueChanges.subscribe(value => {
-        if (value && value.length === 8) { // Verifica se value não é undefined
-          this.buscarCep(value); // Faz a busca sempre que um CEP de 8 caracteres for digitado
-        } else if (value && value.length < 8) { // Verifica se value não é undefined
-          this.form.patchValue({
-            logradouro: '',
-            bairro: '',
-            cidade: '',
-            estado: ''
-          });
-        }
-      });
-    }
+    const cpfSemMascara = cpf.replace(/\D/g, '');
 
-    buscarCep(cep: string) {
-      this.viaCepService.getEnderecoByCep(cep).subscribe({
-        next: (response) => {
-          this.form.patchValue({
-            logradouro: response.logradouro,
-            bairro: response.bairro,
-            cidade: response.localidade,
-            estado: response.uf
-          });
-        },
-        error: () => {
-          alert("Erro ao buscar o CEP");
-        }
-      });
-    }
-
-    validarNome() : boolean {
-      if(this.form.get('nome')?.value != '') return true;
+    if (cpfSemMascara.length !== 11) {
       return false;
     }
 
-    validarCpf(): boolean {
-      const cpf = this.form.get('cpf')?.value;
-      if (!cpf) return false;
-    
-      // Remove a máscara do CPF (pontos e traços)
-      const cpfSemMascara = cpf.replace(/\D/g, '');
-    
-      // Verifica se o CPF tem 11 dígitos
-      if (cpfSemMascara.length !== 11) {
-        return false;
-      }
-    
-      // Verifica se todos os dígitos são iguais (CPF inválido)
-      if (/^(\d)\1{10}$/.test(cpfSemMascara)) {
-        return false;
-      }
-    
-      // Validação dos dígitos verificadores
-      let soma = 0;
-      for (let i = 0; i < 9; i++) {
-        soma += parseInt(cpfSemMascara.charAt(i)) * (10 - i);
-      }
-      let resto = (soma * 10) % 11;
-      if (resto === 10 || resto === 11) resto = 0;
-      if (resto !== parseInt(cpfSemMascara.charAt(9))) {
-        return false;
-      }
-    
-      soma = 0;
-      for (let i = 0; i < 10; i++) {
-        soma += parseInt(cpfSemMascara.charAt(i)) * (11 - i);
-      }
-      resto = (soma * 10) % 11;
-      if (resto === 10 || resto === 11) resto = 0;
-      if (resto !== parseInt(cpfSemMascara.charAt(10))) {
-        return false;
-      }
-      return true; // CPF válido
+    if (/^(\d)\1{10}$/.test(cpfSemMascara)) {
+      return false;
     }
 
-    validarEmail(): boolean {
-      const email: string = this.form.get('email')?.value ?? '';
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+      soma += parseInt(cpfSemMascara.charAt(i)) * (10 - i);
+    }
+    let resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpfSemMascara.charAt(9))) {
+      return false;
     }
 
-    onNoClick(): void {
-      this.dialogRef.close();
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+      soma += parseInt(cpfSemMascara.charAt(i)) * (11 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpfSemMascara.charAt(10))) {
+      return false;
+    }
+    return true; // CPF válido
+  }
+
+  validarEmail(): boolean {
+    const email: string = this.form.get('email')?.value ?? '';
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  salvarDados() {
+    if (this.form.valid) {
+      const dados = this.form.getRawValue();
+      if (dados.data) {
+        // Aplicar "macara":
+        dados.data = dados.data.replace(/^(\d{2})(\d{2})(\d{4})$/, '$1/$2/$3');
+        dados.idade = this.calcularIdade(dados.data);
+      }
+
+      this.dialogRef.close(dados);
+    } else {
+      this.exibirAlertaCamposInvalidos();
+    }
+  }
+
+  calcularIdade(dataNascimento: string): number {
+    if (!dataNascimento || dataNascimento.length < 10) return 0;
+
+    const [dia, mes, ano] = dataNascimento.split('/').map(Number);
+
+    const nascimento = new Date(ano, mes - 1, dia);
+    const hoje = new Date();
+
+    if (nascimento > hoje || isNaN(nascimento.getTime())) return 0;
+
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    if (
+      hoje.getMonth() < mes - 1 ||
+      (hoje.getMonth() === mes - 1 && hoje.getDate() < dia)
+    ) {
+      idade--;
     }
 
-    salvarDados() {
-      if (this.validarNome() && this.validarCpf() && this.validarEmail()) {
-        const formularioCompleto = {
-          ...this.form.value,
-          logradouro: this.form.get('logradouro')?.value,
-          bairro: this.form.get('bairro')?.value,
-          cidade: this.form.get('cidade')?.value,
-          estado: this.form.get('estado')?.value
-        };
-        this.dialogRef.close(formularioCompleto); // Fecha o diálogo e retorna os dados
-      } else {
-        this.exibirAlertaCamposInvalidos(); // Exibe o Snackbar com os campos inválidos
-      }
+    return idade;
+  }
+
+  exibirAlertaCamposInvalidos() {
+    let mensagem = 'Corrija os campos:\n';
+
+    if (!this.validarNome()) {
+      mensagem += '| Nome |\n';
     }
-  
-    exibirAlertaCamposInvalidos() {
-      let mensagem = 'Erro: corrija os campos\n';
-  
-      if (!this.validarNome()) {
-        mensagem += '| Nome |\n';
-      }
-  
-      if (!this.validarCpf()) {
-        mensagem += 'CPF |\n';
-      }
-  
-      if (this.form.get('data')?.invalid) {
-        mensagem += 'Data de nascimento |\n';
-      }
-  
-      if (this.form.get('email')?.invalid) {
-        mensagem += ' E-mail |\n';
-      }
-  
-      if (this.form.get('cep')?.invalid) {
-        mensagem += ' CEP |\n';
-      }
-  
-      this.exibirSnackbar(mensagem); // Exibe o Snackbar com a mensagem
+
+    if (!this.validarCpf()) {
+      mensagem += 'CPF |\n';
     }
-  
-    exibirSnackbar(mensagem: string, acao: string = 'Fechar', duracao: number = 5000) {
-      this.snackBar.open(mensagem, acao, {
-        duration: duracao, // Duração em milissegundos (5 segundos por padrão)
-        horizontalPosition: 'center', // Posição horizontal (center, start, end)
-        verticalPosition: 'bottom', // Posição vertical (top, bottom)
-      });
+
+    if (this.form.get('data')?.invalid) {
+      mensagem += 'Data de nascimento |\n';
     }
+
+    if (this.form.get('email')?.invalid) {
+      mensagem += ' E-mail |\n';
+    }
+
+    if (this.form.get('cep')?.invalid) {
+      mensagem += ' CEP |\n';
+    }
+
+    this.exibirSnackbar(mensagem); // Exibe o Snackbar com a mensagem
+  }
+
+  exibirSnackbar(
+    mensagem: string,
+    acao: string = 'Fechar',
+    duracao: number = 5000
+  ) {
+    this.snackBar.open(mensagem, acao, {
+      duration: duracao, // Duração em milissegundos (5 segundos por padrão)
+      horizontalPosition: 'center', // Posição horizontal (center, start, end)
+      verticalPosition: 'bottom', // Posição vertical (top, bottom)
+    });
+  }
 }
