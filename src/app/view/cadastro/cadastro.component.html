@@ -38,7 +38,7 @@
       <!-- Campo E-mail -->
       <mat-form-field class="campoForm">
         <mat-label>E-mail</mat-label>
-        <input type="email" maxlength="200" matInput formControlName="email" [errorStateMatcher]="matcher"
+        <input type="email" maxlength="200" matInput formControlName="email"
           placeholder="email@exemplo.com" required>
         <mat-hint></mat-hint>
         @if (form.get('email')?.hasError('email') && !form.get('email')?.hasError('required')) {

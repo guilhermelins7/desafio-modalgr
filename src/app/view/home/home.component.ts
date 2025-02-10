@@ -17,6 +17,8 @@ export interface Funcionario {
   bairro: string;
   cidade: string;
   estado: string;
+  temperatura: number;
+  clima: string;
 }
 
 const ELEMENT_DATA: Funcionario[] = [
@@ -60,6 +62,9 @@ export class HomeComponent {
     'bairro',
     'cidade',
     'estado',
+    'temperatura',
+    'clima'
   ];
+
   dataSource = ELEMENT_DATA;
 }

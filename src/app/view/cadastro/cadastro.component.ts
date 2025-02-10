@@ -4,14 +4,11 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import {
   FormControl,
-  FormGroupDirective,
-  NgForm,
   Validators,
   FormsModule,
   ReactiveFormsModule,
   FormGroup,
 } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,21 +17,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { ViacepService } from '../../_services/viacep.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-/** Error when invalid control is dirty, touched, or submitted. */
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    form: FormGroupDirective | NgForm | null
-  ): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
-  }
-}
+import { WeatherService } from '../../_services/weather.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -59,6 +42,7 @@ export class CadastroComponent {
     public dialogRef: MatDialogRef<CadastroComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private viaCepService: ViacepService,
+    private weatherService: WeatherService,
     private snackBar: MatSnackBar
   ) {}
 
@@ -73,9 +57,9 @@ export class CadastroComponent {
     cidade: new FormControl({ value: '', disabled: true }),
     estado: new FormControl({ value: '', disabled: true }),
     idade: new FormControl({ value: 0, disabled: true }),
+    temperatura: new FormControl({ value: 0, disabled: true }),
+    clima:  new FormControl({ value: '', disabled: true }),
   });
-
-  matcher = new MyErrorStateMatcher();
 
   filtroNome(event: any) {
     const value = event.target.value;
@@ -115,9 +99,27 @@ export class CadastroComponent {
           cidade: response.localidade,
           estado: response.uf,
         });
+        const cidade: string = String(this.form.get('cidade')?.value);
+        this.buscarClima(cidade)
       },
       error: () => {
         alert('Erro ao buscar o CEP');
+      },
+    });
+  }
+
+  buscarClima(cidade : string) {
+    this.weatherService.getWeatherByCity(cidade).subscribe({
+      next: (response) => {
+        this.form.patchValue({
+          // temperatura por padrão recebida em Kelvin, já passando para Celsius:
+          temperatura: parseFloat((response.main.temp - 273).toFixed(2)),
+          clima: response.weather[0].main
+        });
+        alert(String(this.form.get('clima')?.value))
+      },
+      error: (error) => {
+        alert(`Erro ao buscar o CEP : ${error.message}`);
       },
     });
   }
