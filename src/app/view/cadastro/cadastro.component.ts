@@ -116,7 +116,6 @@ export class CadastroComponent {
           temperatura: parseFloat((response.main.temp - 273).toFixed(2)),
           clima: response.weather[0].main
         });
-        alert(String(this.form.get('clima')?.value))
       },
       error: (error) => {
         alert(`Erro ao buscar o CEP : ${error.message}`);
